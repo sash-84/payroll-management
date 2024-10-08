@@ -36,11 +36,12 @@ const LoginForm = () => {
       });
       
       if (response.data) {
-        const { userId, isAdmin } = response.data;
+        const { userId, isAdmin, role, message } = response.data; // Expecting role and message from response
         localStorage.setItem('userId', userId); 
         localStorage.setItem('isAdmin', isAdmin); 
-        
-        alert(response.data.message);
+        localStorage.setItem('role', role); // Set role in localStorage
+
+        alert(message); // Show success message
         
         if (isAdmin) {
           window.location.href = '/admin-dashboard'; 
@@ -49,11 +50,11 @@ const LoginForm = () => {
         }
       }
     } catch (error) {
+      console.error('Login error:', error); // Log the error for debugging
       setError('Invalid username or password');
     }
   };
   
-
   return (
     <section className="text-gray-600 body-font relative bg-white">
       <div className="w-2/3 md:w-1/3 container px-5 py-20 mx-auto flex flex-wrap">
