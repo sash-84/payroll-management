@@ -1,8 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import db from './models/db.js';
-import jsonwebtoken from 'jsonwebtoken';
+import db from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
+import employeeRoutes from './routes/employeeRoutes.js';
 
 dotenv.config();
 
@@ -13,7 +14,8 @@ app.use(cors());
 
 const PORT = process.env.PORT || 5001;
 
-const JWT_SECRET = 'your_jwt_secret_key';
+// app.use('/api', authRoutes);
+// app.use('./api', employeeRoutes);
 
 app.get('/auth', (req, res) => {
     db.query('SELECT * FROM auth', (err, results) => {
@@ -42,12 +44,11 @@ app.post('/login', (req, res) => {
             };
             if (result.length > 0) {
                 const user = result[0];
-                const token = jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, JWT_SECRET, { expiresIn: '1h' });
                 res.json({ 
                     message: 'Login successful',
                     userId: user.emp_id ,
+                    userName: user.username,
                     isAdmin: user.is_admin,
-                    token
                 });
             } else {
                 res.status(401).json({ message: 'Invalid username or password' });
@@ -89,6 +90,11 @@ app.get('/employee/:id', (req, res) => {
         }
     });
 });
+
+// app.use((err, req, res, next) => {
+//     console.error(err.stack);
+//     res.status(500).send('Something broke!');
+// });
 
 app.listen(PORT, () => {
     console.log('Server running at', PORT);

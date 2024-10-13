@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
-const LoginForm = () => {
+const LoginForm = ({setIsLoggedIn, setSavedUsername, setSavedIsAdmin}) => {
+
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -36,17 +41,24 @@ const LoginForm = () => {
       });
       
       if (response.data) {
-        const { userId, isAdmin } = response.data;
+        const { userId, isAdmin, userName } = response.data;
         localStorage.setItem('userId', userId); 
-        localStorage.setItem('isAdmin', isAdmin); 
+        localStorage.setItem('isAdmin', isAdmin);
+        localStorage.setItem('userName', userName); 
+
+        setIsLoggedIn(true);
+        setSavedUsername(userName);
+        setSavedIsAdmin(isAdmin);
         
-        alert(response.data.message);
-        
-        if (isAdmin) {
-          window.location.href = '/admin-dashboard'; 
-        } else {
-          window.location.href = '/employee-dashboard';
-        }
+        toast.success(response.data.message);
+      
+        setTimeout(()=> {
+          if (isAdmin) {
+            navigate('/admin-dashboard'); 
+          } else {
+            navigate('/employee-dashboard');
+          }
+        },1000)
       }
     } catch (error) {
       setError('Invalid username or password');

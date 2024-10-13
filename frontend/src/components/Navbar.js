@@ -1,12 +1,23 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 
-export default function Navbar() {
+export default function Navbar({setIsLoggedIn, isLoggedIn, savedUsername, setSavedUsername, setSavedIsAdmin, savedIsAdmin}) {
 
     const navigate = useNavigate();
 
     function handleClick() {
         navigate('/login');
     }
+
+    const handleLogout = () => {
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('isAdmin');
+      setIsLoggedIn(false);
+      setSavedUsername('');
+      navigate('/');
+  };
+
+  console.log(savedIsAdmin);
 
     return (
         <header className="text-gray-600 body-font bg-white">
@@ -24,9 +35,24 @@ export default function Navbar() {
                 <NavLink to="/"><li className="mr-5 hover:text-indigo-500">Home</li></NavLink>
                 <NavLink to="/about"><li className="mr-5 hover:text-indigo-500">About</li></NavLink>
                 <NavLink to="/features"><li className="mr-5 hover:text-indigo-500">Features</li></NavLink>
+                {
+                  isLoggedIn ? (
+                      <NavLink to={savedIsAdmin ? "admin-dashboard" : "/employee-dashboard"}><li className="mr-5 hover:text-indigo-500">Dashboard</li></NavLink>
+                  ) : null
+                }
               </ul>   
             </nav>
-            <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-3 focus:outline-none hover:bg-indigo-600 rounded text-base mt-4 md:mt-0" onClick={handleClick}>Log In</button>
+
+            {
+              isLoggedIn ? (
+                <div className='flex items-center'>
+                  <span className='mr-5 text-gray-600'>Hello, {savedUsername}</span>
+                  <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-3 focus:outline-none hover:bg-indigo-600 rounded text-base mt-4 md:mt-0" onClick={handleLogout}>Log Out</button>
+                </div>
+              ) : (
+                <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-3 focus:outline-none hover:bg-indigo-600 rounded text-base mt-4 md:mt-0" onClick={handleClick}>Log In</button>
+              )
+            }
           </div>
         </header>
     );
