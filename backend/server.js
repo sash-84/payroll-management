@@ -57,38 +57,218 @@ app.post('/login', (req, res) => {
     );
 });
 
-app.get('/employee/:id', (req, res) => {
+
+app.get('/employee/:id', async (req, res) => {
     const employeeId = req.params.id;
 
-    const query = `
-        SELECT 
-            e.employee_id, 
-            e.first_name, 
-            s.basic_salary, 
-            s.deductions, 
-            s.net_salary 
-        FROM 
-            employee e 
-        JOIN 
-            salary s ON e.employee_id = s.employee_id 
-        JOIN 
-            department d ON e.department_id = d.department_id 
-        WHERE 
-            e.employee_id = ?;
-    `;
+    const employeeQuery = 'SELECT * FROM Employee WHERE employee_id = ?';
 
-    db.query(query, [employeeId], (error, results) => {
-        if (error) {
-            console.error('Error fetching payroll details:', error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
 
-        if (results.length > 0) {
-            res.json(results[0]); 
-        } else {
-            res.status(404).json({ message: 'Employee not found' });
-        }
-    });
+    try {
+        const employee = await queryPromise(employeeQuery, [employeeId]);
+
+        res.json({
+            employee: employee[0]
+
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/salary/:id', async (req, res) => {
+    const employeeId = req.params.id;
+
+    // const employeeQuery = 'SELECT * FROM Employee WHERE employee_id = ?';
+    const salaryQuery = 'SELECT * FROM Salary WHERE employee_id = ?';
+
+
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    try {
+        const salary = await queryPromise(salaryQuery, [employeeId]);
+
+        res.json({
+            salary: salary[0]
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/leave/:id', async (req, res) => {
+    const employeeId = req.params.id;
+
+    const leaveQuery = 'SELECT * FROM LeaveTable WHERE employee_id = ?';
+
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    try {
+        const leaves = await queryPromise(leaveQuery, [employeeId]);
+    
+        res.json({
+            leaves: leaves[0]
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/tax/:id', async (req, res) => {
+    const employeeId = req.params.id;
+
+    const taxQuery = 'SELECT * FROM Tax WHERE employee_id = ?';
+
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    try {
+        const taxes = await queryPromise(taxQuery, [employeeId]);
+
+        res.json({
+            taxes: taxes[0]
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/bonus/:id', async (req, res) => {
+    const employeeId = req.params.id;
+
+    const bonusQuery = 'SELECT * FROM Bonus WHERE employee_id = ?';
+
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    try {
+        const bonuses = await queryPromise(bonusQuery, [employeeId]);
+
+        res.json({
+            bonuses: bonuses[0]
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/overtime/:id', async (req, res) => {
+    const employeeId = req.params.id;
+
+    const overtimeQuery = 'SELECT * FROM Overtime WHERE employee_id = ?';
+
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    try {
+        const overtime = await queryPromise(overtimeQuery, [employeeId]);
+
+        res.json({
+            overtime: overtime[0]
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/deduction/:id', async (req, res) => {
+    const employeeId = req.params.id;
+
+    const deductionsQuery = 'SELECT * FROM Deductions WHERE employee_id = ?';
+
+    // Helper function to make db.query() return a promise
+    const queryPromise = (query, params) => {
+        return new Promise((resolve, reject) => {
+            db.query(query, params, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    try {
+        const deductions = await queryPromise(deductionsQuery, [employeeId]);
+
+        res.json({
+            deductions: deductions[0]
+        });
+    } catch (error) {
+        console.error('Error fetching payroll details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // app.use((err, req, res, next) => {

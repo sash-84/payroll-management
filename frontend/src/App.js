@@ -8,7 +8,6 @@ import AdminDashboard from './components/AdminDashboard';
 import EmployeeDashboard from './components/EmployeeDashboard';
 import About from './components/AboutPage';
 import Features from './components/Features';
-import Hello from './components/hello';
 
 function App() {
 
@@ -27,7 +26,6 @@ function App() {
     }
   }, []);
 
-  console.log("app ",savedisAdmin);
 
   return (
     <>
@@ -36,7 +34,6 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<LoginForm setIsLoggedIn={setIsLoggedIn} setSavedUsername={setSavedUsername} setSavedIsAdmin={setSavedIsAdmin}/>} />
         <Route path='/about' element={<About />} />
-        <Route path='/hello' element={<Hello />} />
         <Route path='/features' element={<Features />} />
         <Route path='/admin-dashboard' element={<AdminDashboard />} />
         <Route path='/employee-dashboard' element={<EmployeeDashboard />} />
